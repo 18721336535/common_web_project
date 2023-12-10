@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"bluebell_backend/logic"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/miaogu-go/bluebell/logic"
 	"go.uber.org/zap"
 )
 
