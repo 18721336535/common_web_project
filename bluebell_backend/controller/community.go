@@ -2,9 +2,10 @@ package controller
 
 import (
 	"bluebell_backend/logic"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"strconv"
 )
 
 func CommunityHandler(c *gin.Context) {

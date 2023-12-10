@@ -3,9 +3,10 @@ package controller
 import (
 	"bluebell_backend/logic"
 	"bluebell_backend/models"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"strconv"
 )
 
 func CreatePostHandler(c *gin.Context) {
