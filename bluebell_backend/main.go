@@ -10,14 +10,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/miaogu-go/bluebell/controller"
+	"github.com/mercury/controller"
 
-	"github.com/miaogu-go/bluebell/dao/mysql"
-	"github.com/miaogu-go/bluebell/dao/redis"
-	"github.com/miaogu-go/bluebell/logger"
-	"github.com/miaogu-go/bluebell/pkg/snowflake"
-	"github.com/miaogu-go/bluebell/routes"
-	"github.com/miaogu-go/bluebell/settings"
+	"github.com/mercury/dao/mysql"
+	"github.com/mercury/dao/redis"
+	"github.com/mercury/logger"
+	"github.com/mercury/pkg/snowflake"
+	"github.com/mercury/routes"
+	"github.com/mercury/settings"
 
 	"github.com/gin-gonic/gin"
 
@@ -37,8 +37,8 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host 这里写接口服务的host
-// @BasePath 这里写base path
+// @host 127.0.0.1
+// @BasePath swag/v1
 func main() {
 	/*var confPath string
 

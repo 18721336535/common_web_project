@@ -3,7 +3,7 @@ package mysql
 import (
 	"fmt"
 
-	"github.com/miaogu-go/bluebell/settings"
+	"github.com/mercury/settings"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/models"
 
 	"github.com/go-redis/redis"
 )

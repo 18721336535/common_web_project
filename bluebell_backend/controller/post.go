@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"bluebell_backend/logic"
-	"bluebell_backend/models"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/mercury/logic"
+	"github.com/mercury/models"
 	"go.uber.org/zap"
 )
 

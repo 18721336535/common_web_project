@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/miaogu-go/bluebell/dao/mysql"
-	"github.com/miaogu-go/bluebell/dao/redis"
-	"github.com/miaogu-go/bluebell/models"
-	"github.com/miaogu-go/bluebell/pkg/snowflake"
+	"github.com/mercury/dao/mysql"
+	"github.com/mercury/dao/redis"
+	"github.com/mercury/models"
+	"github.com/mercury/pkg/snowflake"
 )
 
 type PostDetail struct {

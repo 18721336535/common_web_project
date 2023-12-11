@@ -7,7 +7,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/models"
 )
 
 const (

@@ -1,4 +1,5 @@
-module github.com/miaogu-go/bluebell
+module github.com/mercury
+// github.com/mercury
 
 go 1.16
 

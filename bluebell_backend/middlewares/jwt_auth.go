@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"github.com/miaogu-go/bluebell/controller"
+	"github.com/mercury/controller"
 
-	"github.com/miaogu-go/bluebell/pkg/jwt"
+	"github.com/mercury/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 )

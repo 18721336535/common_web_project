@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/miaogu-go/bluebell/dao/redis"
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/dao/redis"
+	"github.com/mercury/models"
 )
 
 const (

@@ -3,9 +3,9 @@ package mysql
 import (
 	"testing"
 
-	"github.com/miaogu-go/bluebell/settings"
+	"github.com/mercury/settings"
 
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/models"
 )
 
 func init() {

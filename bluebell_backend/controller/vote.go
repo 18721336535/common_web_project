@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/miaogu-go/bluebell/logic"
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/logic"
+	"github.com/mercury/models"
 	"go.uber.org/zap"
 )
 

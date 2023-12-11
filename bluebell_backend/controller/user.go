@@ -1,15 +1,16 @@
 package controller
 
 import (
-	"bluebell_backend/logic"
-	"bluebell_backend/models"
 	"errors"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
 	"go.uber.org/zap"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mercury/logic"
+	"github.com/mercury/models"
 )
 
 // @Summary 用户注册
@@ -18,9 +19,9 @@ import (
 // @Accept application/json
 // @Produce application/json
 // @Param Authorization header string false "Bearer 用户令牌"
-// @Param object query models.ParamPostList false "查询参数"
+// @Param object query models.SignupReq false "查询参数"
 // @Security ApiKeyAuth
-// @Success 200 {object} _ResponsePostList
+// @Success 200 {object} ResCode
 // @Router /api/v1/signup [post]
 // SignUpHandler 用户注册
 func SignUpHandler(c *gin.Context) {

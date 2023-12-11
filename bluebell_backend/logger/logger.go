@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/miaogu-go/bluebell/settings"
+	"github.com/mercury/settings"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

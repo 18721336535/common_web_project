@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/models"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/en"
@@ -16,10 +16,10 @@ import (
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
 )
 
-//定义一个全局翻译器
+// 定义一个全局翻译器
 var trans ut.Translator
 
-//InitTrans 初始化翻译器
+// InitTrans 初始化翻译器
 func InitTrans(locale string) (err error) {
 	// 修改gin框架中的Validator引擎属性，实现自定制
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {

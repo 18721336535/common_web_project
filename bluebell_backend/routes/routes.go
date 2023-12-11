@@ -1,16 +1,14 @@
 package routes
 
 import (
-	"github.com/miaogu-go/bluebell/middlewares"
-	gs "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/mercury/middlewares"
 
-	"github.com/miaogu-go/bluebell/controller"
-	"github.com/miaogu-go/bluebell/logger"
-	"github.com/miaogu-go/bluebell/settings"
+	"github.com/mercury/controller"
+	"github.com/mercury/logger"
+	"github.com/mercury/settings"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/miaogu-go/bluebell/docs"
+	// _ "github.com/mercury/docs"
 )
 
 func Setup() *gin.Engine {
@@ -45,7 +43,7 @@ func Setup() *gin.Engine {
 	//刷新token
 	r.POST("/refresh", controller.RefreshTokenHandler)
 
-	r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
+	// r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

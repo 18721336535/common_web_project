@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/miaogu-go/bluebell/pkg/tools"
+	"github.com/mercury/pkg/tools"
 
-	"github.com/miaogu-go/bluebell/models"
+	"github.com/mercury/models"
 )
 
 const (

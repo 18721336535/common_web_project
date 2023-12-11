@@ -3,7 +3,7 @@ package redis
 import (
 	"fmt"
 
-	"github.com/miaogu-go/bluebell/settings"
+	"github.com/mercury/settings"
 
 	"github.com/go-redis/redis"
 )

@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miaogu-go/bluebell/dao/mysql"
+	"github.com/mercury/dao/mysql"
 )
 
 // GetCommunityList 获取社区列表
