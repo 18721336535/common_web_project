@@ -1,4 +1,75 @@
+basePath: 这里写base path
+definitions:
+  controller.ResCode:
+    enum:
+    - 1000
+    - 1001
+    - 1002
+    - 1003
+    - 1004
+    - 1005
+    - 1006
+    - 1007
+    - 1008
+    - 1009
+    type: integer
+    x-enum-varnames:
+    - CodeSuccess
+    - CodeInvalidParam
+    - CodeUserExist
+    - CodeUserNotExist
+    - CodeInvalidPassword
+    - CodeServerBusy
+    - CodeTokenInvalid
+    - CodeRefreshTokenFail
+    - CodeVoteExpire
+    - CodeNotRepeatVote
+host: 这里写接口服务的host
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: support@swagger.io
+    name: pu.qiang@qq.com
+    url: http://www.swagger.io/support
+  description: 这里写描述信息
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: 学习项目
+  version: "1.0"
+paths:
+  /api/v1/signup:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - in: query
+        name: password
+        required: true
+        type: string
+      - in: query
+        name: re_password
+        required: true
+        type: string
+      - in: query
+        name: user
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ResCode'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户注册
+      tags:
+      - 用户注册
 swagger: "2.0"

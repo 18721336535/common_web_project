@@ -2,75 +2,81 @@ package jwt
 
 import (
 	"errors"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
-const TokenExpireDuration = time.Hour * 2
+const (
+	TokenExpireDuration = 2 * time.Hour
+)
 
-var secret = []byte("WorryFree")
+var (
+	jwtSercet                 = []byte("jwt")
+	jwtSercetFunc jwt.Keyfunc = func(token *jwt.Token) (interface{}, error) {
+		return jwtSercet, nil
+	}
+)
 
 type MyClaims struct {
-	UserID   int64  `json:"user_id"`
-	Username string `json:"username"`
 	jwt.StandardClaims
+	UserId   int64  `json:"user_id"`
+	Username string `json:"username"`
 }
 
-// GenToken 获取生成 access token
-func GenToken(userID int64, username string) (aToken, rToken string, err error) {
+// GenerateToken 生成token
+func GenerateToken(username string, userId int64) (aToken, rToken string, err error) {
 	claims := MyClaims{
-		UserID:   userID,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
+			Issuer:    "bluebell",
+		},
+		UserId:   userId,
 		Username: username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    "bluebell",                                 // 签发人
-		},
 	}
-	aToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(secret)
-	rToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, &MyClaims{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    "bluebell",                                 // 签发人
-		},
-	}).SignedString(secret)
+	aToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtSercet)
+	rToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+		Issuer:    "bluebell",
+	}).SignedString(jwtSercet)
+
 	return
 }
 
 // ParseToken 解析token
-func ParseToken(tokenStr string) (*MyClaims, error) {
-	mc := new(MyClaims)
-	token, err := jwt.ParseWithClaims(tokenStr, mc, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
-	})
+func ParseToken(tokenString string) (*MyClaims, error) {
+	myClaims := new(MyClaims)
+	token, err := jwt.ParseWithClaims(tokenString, myClaims, jwtSercetFunc)
 	if err != nil {
 		return nil, err
 	}
-	// token有效，返回 MyClaim信息
-	if token.Valid {
-		return mc, nil
+	if !token.Valid {
+		return nil, errors.New("invalid token")
 	}
-	// 否则返回无效的token错误
-	return nil, errors.New("无效的token")
+
+	return myClaims, nil
 }
 
-// RefreshToken 刷新AccessToken
+// RefreshToken 刷新token
 func RefreshToken(aToken, rToken string) (newAToken, newRToken string, err error) {
-	// refresh token无效直接返回
-	if _, err = jwt.Parse(rToken, func(jt *jwt.Token) (interface{}, error) {
-		return secret, nil
-	}); err != nil {
+	//解析验证refresh token 是否有效
+	_, err = jwt.Parse(rToken, jwtSercetFunc)
+	if err != nil {
 		return
 	}
-	// 从旧access token中解析出claims数据
-	var claims MyClaims
-	_, err = jwt.ParseWithClaims(aToken, &claims, func(jt *jwt.Token) (interface{}, error) {
 
-		return secret, nil
-	})
+	var myClaims MyClaims
+	//从access token中解析出用户数据
+	_, err = jwt.ParseWithClaims(aToken, &myClaims, jwtSercetFunc)
+	if err == nil { //access token 未过期，返回原本数据
+		newAToken = aToken
+		newRToken = rToken
+		return
+	}
 	v, _ := err.(*jwt.ValidationError)
-	// 当access token是过期错误 并且 refresh token没有过期时就创建⼀个新的access token
+	//access token为过期错误
 	if v.Errors == jwt.ValidationErrorExpired {
-		return GenToken(claims.UserID, claims.Username)
+		return GenerateToken(myClaims.Username, myClaims.UserId)
 	}
 	return
 }

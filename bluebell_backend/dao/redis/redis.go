@@ -1,38 +1,28 @@
 package redis
 
 import (
-	"bluebell_backend/settings"
 	"fmt"
+
+	"github.com/miaogu-go/bluebell/settings"
 
 	"github.com/go-redis/redis"
 )
 
-var (
-	client *redis.Client
-	Nil    = redis.Nil
-)
+var rdb *redis.Client
 
-type SliceCmd = redis.SliceCmd
-type StringStringMapCmd = redis.StringStringMapCmd
-
-// Init 初始化连接
-func Init(cfg *settings.RedisConfig) (err error) {
-	client = redis.NewClient(&redis.Options{
-		Addr:         fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
-		Password:     cfg.Password, // no password set
-		DB:           cfg.DB,       // use default DB
-		PoolSize:     cfg.PoolSize,
-		MinIdleConns: cfg.MinIdleConns,
+func Init(redisConf *settings.RedisConf) {
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", redisConf.Host, redisConf.Port),
+		Password: redisConf.Password,
+		DB:       redisConf.Db,
+		PoolSize: redisConf.PoolSize,
 	})
-
-	_, err = client.Ping().Result()
-
+	_, err := rdb.Ping().Result()
 	if err != nil {
-		fmt.Printf("redis连接失败，err：%v", err)
+		panic(err)
 	}
-	return
 }
 
 func Close() {
-	_ = client.Close()
+	_ = rdb.Close()
 }

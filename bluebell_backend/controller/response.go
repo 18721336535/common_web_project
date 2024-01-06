@@ -1,30 +1,37 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-type Response struct {
+type ResponseData struct {
 	Code ResCode     `json:"code"`
 	Msg  interface{} `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
-// ServerResponse 服务器返回的响应信息
-func ServerResponse(c *gin.Context, code ResCode, data interface{}) {
-	c.JSON(http.StatusOK, &Response{
+func ResponseError(c *gin.Context, code ResCode) {
+	c.JSON(http.StatusOK, ResponseData{
 		Code: code,
 		Msg:  code.Msg(),
+		Data: nil,
+	})
+}
+
+func ResponseSuccess(c *gin.Context, data interface{}) {
+	c.JSON(http.StatusOK, ResponseData{
+		Code: CodeSuccess,
+		Msg:  CodeSuccess.Msg(),
 		Data: data,
 	})
 }
 
-// ServerResponseWithMsg 服务器返回自定义Msg
-func ServerResponseWithMsg(c *gin.Context, code ResCode, msg interface{}, data interface{}) {
-	c.JSON(http.StatusOK, &Response{
+func ResponseErrorWithMsg(c *gin.Context, code ResCode, msg interface{}) {
+	c.JSON(http.StatusOK, ResponseData{
 		Code: code,
 		Msg:  msg,
-		Data: data,
+		Data: nil,
 	})
 }

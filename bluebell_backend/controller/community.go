@@ -1,39 +1,38 @@
 package controller
 
 import (
-	"bluebell_backend/logic"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/miaogu-go/bluebell/logic"
 	"go.uber.org/zap"
 )
 
+// CommunityHandler 获取社区列表
 func CommunityHandler(c *gin.Context) {
-	// 1. 查询到所有的社区(id, name)以列表的形式返回
-	data, err := logic.GetCommunityList()
+	data, err := logic.GetCommunityList(c)
 	if err != nil {
 		zap.L().Error("logic.GetCommunityList() failed", zap.Error(err))
-		ServerResponse(c, CodeServerBusy, nil)
+		ResponseError(c, CodeServerBusy)
 		return
 	}
-	ServerResponse(c, CodeSuccess, data)
+	ResponseSuccess(c, data)
 }
 
-func CommunityDetailHandler(c *gin.Context) {
-	// 1. 获取社区id
+// GetCommunityDetail 获取社区详情
+func GetCommunityDetail(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		zap.L().Error("logic getCommunityId failed", zap.Error(err))
-		ServerResponse(c, CodeInvalidParam, nil)
+		zap.L().Error("GetCommunityDetail failed", zap.Error(err))
+		ResponseError(c, CodeInvalidParam)
 		return
 	}
-	// 1.根据id查询社区详细信息
-	data, err := logic.GetCommunityDetail(id)
+	data, err := logic.GetCommunityDetail(c, id)
 	if err != nil {
-		zap.L().Error("logic GetCommunityDetail failed", zap.Error(err))
-		ServerResponse(c, CodeInvalidParam, nil)
+		zap.L().Error("GetCommunityDetail failed", zap.Error(err), zap.Int64("id", id))
+		ResponseError(c, CodeServerBusy)
 		return
 	}
-	ServerResponse(c, CodeSuccess, data)
+	ResponseSuccess(c, data)
 }

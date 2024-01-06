@@ -9,22 +9,115 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "pu.qiang@qq.com",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/api/v1/signup": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "用户注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户注册"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 用户令牌",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "re_password",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "user",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ResCode"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.ResCode": {
+            "type": "integer",
+            "enum": [
+                1000,
+                1001,
+                1002,
+                1003,
+                1004,
+                1005,
+                1006,
+                1007,
+                1008,
+                1009
+            ],
+            "x-enum-varnames": [
+                "CodeSuccess",
+                "CodeInvalidParam",
+                "CodeUserExist",
+                "CodeUserNotExist",
+                "CodeInvalidPassword",
+                "CodeServerBusy",
+                "CodeTokenInvalid",
+                "CodeRefreshTokenFail",
+                "CodeVoteExpire",
+                "CodeNotRepeatVote"
+            ]
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "这里写接口服务的host",
+	BasePath:         "这里写base path",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "学习项目",
+	Description:      "这里写描述信息",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

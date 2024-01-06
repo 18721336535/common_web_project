@@ -7,64 +7,68 @@ import (
 	"github.com/spf13/viper"
 )
 
-var Conf = new(AppConfig)
+var Conf = new(Config)
 
-type AppConfig struct {
-	Mode         string `mapstructure:"mode"`
-	Port         int    `mapstructure:"port"`
-	*LogConfig   `mapstructure:"log"`
-	*MySQLConfig `mapstructure:"mysql"`
-	*RedisConfig `mapstructure:"redis"`
+type Config struct {
+	AppConf   *AppConf   `mapstructure:"app"`
+	DbConf    *DbConf    `mapstructure:"db"`
+	LogConf   *LogConf   `mapstructure:"log"`
+	RedisConf *RedisConf `mapstructure:"redis"`
 }
 
-type MySQLConfig struct {
-	Host         string `mapstructure:"host"`
-	User         string `mapstructure:"user"`
-	Password     string `mapstructure:"password"`
-	DB           string `mapstructure:"db"`
-	Port         int    `mapstructure:"port"`
-	MaxOpenConns int    `mapstructure:"max_open_conns"`
-	MaxIdleConns int    `mapstructure:"max_idle_conns"`
+type AppConf struct {
+	Name      string `mapstructure:"name"`
+	Mode      string `mapstructure:"mode"`
+	Port      int    `mapstructure:"port"`
+	StartTime string `mapstructure:"startTime"`
+	MachineId int64  `mapstructure:"machineId"`
 }
 
-type RedisConfig struct {
-	Host         string `mapstructure:"host"`
-	Password     string `mapstructure:"password"`
-	Port         int    `mapstructure:"port"`
-	DB           int    `mapstructure:"db"`
-	PoolSize     int    `mapstructure:"pool_size"`
-	MinIdleConns int    `mapstructure:"min_idle_conns"`
+type DbConf struct {
+	Host        string `mapstructure:"host"`
+	Port        int    `mapstructure:"port"`
+	User        string `mapstructure:"user"`
+	Password    string `mapstructure:"password"`
+	DbName      string `mapstructure:"dbname"`
+	MaxOpenConn int    `mapstructure:"maxOpenConn"`
+	MaxIdleConn int    `mapstructure:"maxIdleConn"`
 }
 
-type LogConfig struct {
+type LogConf struct {
 	Level      string `mapstructure:"level"`
 	Filename   string `mapstructure:"filename"`
-	MaxSize    int    `mapstructure:"max_size"`
-	MaxAge     int    `mapstructure:"max_age"`
-	MaxBackups int    `mapstructure:"max_backups"`
+	MaxSize    int    `mapstructure:"maxSize"`
+	MaxAge     int    `mapstructure:"maxAge"`
+	MaxBackups int    `mapstructure:"maxBackups"`
 }
 
-func Init() error {
-	// 设置配置文件
-	viper.SetConfigFile("./conf/config.yaml")
-	// 监听配置文件的变化
-	viper.WatchConfig()
-	viper.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println("配置文件已修改")
-		// 检查是否是正确修改
-		err := viper.Unmarshal(&Conf)
-		if err != nil {
-			fmt.Println("viper.Unmarshal failed, err: ", err)
-			return
-		}
-	})
-	// 读取配置文件, 存储到Conf这个结构体中，以供其他文件直接调用
+type RedisConf struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Password string `mapstructure:"password"`
+	Db       int    `mapstructure:"db"`
+	PoolSize int    `mapstructure:"poolSize"`
+}
+
+func Init() {
+	viper.SetConfigName("config")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath("./conf/")
+	//viper.SetConfigFile(filePath)
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("ReadInConfig failed, err: %v", err))
+		panic(err)
 	}
-	if err := viper.Unmarshal(&Conf); err != nil {
-		panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
+	err = viper.Unmarshal(Conf)
+	if err != nil {
+		panic(err)
 	}
-	return err
+	viper.WatchConfig()
+	viper.OnConfigChange(func(in fsnotify.Event) {
+		fmt.Println("config update...")
+		err = viper.Unmarshal(Conf)
+		if err != nil {
+			panic(err)
+		}
+	})
 }

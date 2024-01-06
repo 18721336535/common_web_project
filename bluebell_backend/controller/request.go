@@ -2,21 +2,26 @@ package controller
 
 import (
 	"errors"
+
 	"github.com/gin-gonic/gin"
 )
 
-const ContextUserIDKey = "userID"
+const (
+	UserInfoKey = "user_id"
+)
 
-var ErrorUserNotLogin = errors.New("用户未登录")
+var ErrUserNotLogin = errors.New("用户未登录")
 
-func GetCurrentUserID(c *gin.Context) (userID int64, err error) {
-	uid, ok := c.Get(ContextUserIDKey)
+// GetUserInfo 获取用户登录信息
+func GetUserInfo(c *gin.Context) (int64, error) {
+	userId, exist := c.Get(UserInfoKey)
+	if !exist {
+		return 0, ErrUserNotLogin
+	}
+	uid, ok := userId.(int64)
 	if !ok {
-		err = ErrorUserNotLogin
-		return
+		return 0, ErrUserNotLogin
 	}
-	if userID, ok = uid.(int64); !ok {
-		err = ErrorUserNotLogin
-	}
-	return
+
+	return uid, nil
 }

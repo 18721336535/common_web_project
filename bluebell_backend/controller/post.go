@@ -1,55 +1,102 @@
 package controller
 
 import (
-	"bluebell_backend/logic"
-	"bluebell_backend/models"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"github.com/miaogu-go/bluebell/logic"
+	"github.com/miaogu-go/bluebell/models"
 	"go.uber.org/zap"
 )
 
+// CreatePostHandler 创建帖子
 func CreatePostHandler(c *gin.Context) {
-	// 1. 获取参数及参数的校验
-	p := new(models.Post)
-	if err := c.ShouldBindJSON(p); err != nil {
+	param := new(models.CreatePostReq)
+	if err := c.ShouldBindJSON(param); err != nil {
 		zap.L().Error("CreatePostHandler failed", zap.Error(err))
-		ServerResponse(c, CodeInvalidParam, nil)
+		errs, ok := err.(validator.ValidationErrors)
+		if ok {
+			ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
+			return
+		}
+		ResponseError(c, CodeInvalidParam)
 		return
 	}
-	userID, err := GetCurrentUserID(c)
+	userId, err := GetUserInfo(c)
 	if err != nil {
-		zap.L().Error("GetCurrentUserID failed", zap.Error(err))
+		zap.L().Error("GetUserInfo fail", zap.Error(err))
+		ResponseError(c, CodeTokenInvalid)
 		return
 	}
-	p.AuthorID = userID
-	// 2. 创建帖子
-	if err := logic.CreatePost(p); err != nil {
-		zap.L().Error("logic.CreatePost(p) failed", zap.Error(err))
-		ServerResponse(c, CodeInvalidParam, nil)
+	param.AuthorId = userId
+	err = logic.CreatePost(c, param)
+	if err != nil {
+		zap.L().Error("CreatePost failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
 		return
 	}
-	// 3. 返回响应
-	ServerResponse(c, CodeSuccess, p)
+	ResponseSuccess(c, nil)
 }
 
+// GetPostDetailHandler 获取帖子详情
 func GetPostDetailHandler(c *gin.Context) {
-	// 1. 获取参数,(从URL中获取帖子的id)
 	idStr := c.Param("id")
-	id, err := strconv.ParseInt(idStr, 10, 64)
+	postId, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		zap.L().Error("invalid param", zap.Error(err))
-		ServerResponse(c, CodeInvalidParam, nil)
+		zap.L().Error("Param id failed", zap.Error(err))
+		ResponseError(c, CodeInvalidParam)
 		return
 	}
+	data, err := logic.GetPostDetail(c, postId)
+	if err != nil {
+		zap.L().Error("GetPostDetail(postId) failed", zap.Error(err), zap.Int64("postId", postId))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, data)
+}
 
-	// 2. 根据id取出帖子的数据(查数据库)
-	data, err := logic.GetPostById(id)
-	if err != nil {
-		zap.L().Error("logic.GetPostById(id) failed", zap.Error(err))
-		ServerResponse(c, CodeServerBusy, nil)
+// GetPostsHandler 帖子列表
+func GetPostsHandler(c *gin.Context) {
+	param := new(models.PostsReq)
+	if err := c.ShouldBindJSON(param); err != nil {
+		zap.L().Error("GetPostsHandler failed", zap.Error(err))
+		errs, ok := err.(validator.ValidationErrors)
+		if ok {
+			ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
+			return
+		}
+		ResponseError(c, CodeInvalidParam)
 		return
 	}
-	// 3. 返回响应
-	ServerResponse(c, CodeSuccess, data)
+	data, err := logic.GetPosts(c, param)
+	if err != nil {
+		zap.L().Error("CreatePost failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, data)
+}
+
+// GetPosts2Handler 帖子列表2
+func GetPosts2Handler(c *gin.Context) {
+	param := new(models.PostsReq)
+	if err := c.ShouldBindJSON(param); err != nil {
+		zap.L().Error("GetPostsHandler failed", zap.Error(err))
+		errs, ok := err.(validator.ValidationErrors)
+		if ok {
+			ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
+			return
+		}
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	data, err := logic.GetPosts2(c, param)
+	if err != nil {
+		zap.L().Error("logic.GetPosts2(c, param) failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, data)
 }

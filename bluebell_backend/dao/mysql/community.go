@@ -1,31 +1,43 @@
 package mysql
 
-import (
-	"bluebell_backend/models"
-	"database/sql"
-	"errors"
+import "database/sql"
+
+const (
+	TableNameCommunity = "community"
 )
 
-func GetCommunityList() (data []models.Community, err error) {
-	sqlStr := "select community_id, community_name from community"
-	err = db.Select(&data, sqlStr)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			data, err = []models.Community{}, nil
-		}
-		return nil, errors.New("community Select failed, err: " + err.Error())
-	}
-	return
+type Community struct {
+	Id            uint32 `json:"id" db:"id"`
+	CommunityId   uint32 `json:"community_id" db:"community_id"`
+	CommunityName string `json:"community_name" db:"community_name"`
+	Introduction  string `json:"introduction" db:"introduction"`
+	CreateTime    string `json:"create_time" db:"create_time"`
+	UpdateTime    string `json:"update_time" db:"update_time"`
 }
 
-func GetCommunityById(id int64) (data models.CommunityDetail, err error) {
-	sqlStr := "select community_id, community_name, introduction, create_time from community where community_id=?"
-	err = db.Get(&data, sqlStr, id)
+// GetCommunityList 获取社区列表
+func GetCommunityList() ([]Community, error) {
+	sqlStr := "SELECT * FROM " + TableNameCommunity
+	communities := make([]Community, 0)
+	err := db.Select(&communities, sqlStr)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return models.CommunityDetail{}, errors.New("数据为空")
-		}
-		return
+		return nil, err
 	}
-	return
+
+	return communities, nil
+}
+
+// GetCommunityDetailById 根据社区id获取详情
+func GetCommunityDetailById(id int64) (*Community, error) {
+	sqlStr := "SELECT * FROM " + TableNameCommunity + " WHERE community_id=?"
+	community := new(Community)
+	err := db.Get(community, sqlStr, id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return community, nil
 }

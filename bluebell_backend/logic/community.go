@@ -1,17 +1,26 @@
 package logic
 
 import (
-	"bluebell_backend/dao/mysql"
-	"bluebell_backend/models"
+	"github.com/gin-gonic/gin"
+	"github.com/miaogu-go/bluebell/dao/mysql"
 )
 
-func GetCommunityList() (data interface{}, err error) {
-	// 1. 查询数据库, 找到所有的community并返回
-	data, err = mysql.GetCommunityList()
-	return
+// GetCommunityList 获取社区列表
+func GetCommunityList(c *gin.Context) ([]mysql.Community, error) {
+	communities, err := mysql.GetCommunityList()
+	if err != nil {
+		return nil, err
+	}
+
+	return communities, nil
 }
 
-func GetCommunityDetail(id int64) (data models.CommunityDetail, err error) {
-	data, err = mysql.GetCommunityById(id)
-	return
+// GetCommunityDetail 获取社区详情
+func GetCommunityDetail(c *gin.Context, id int64) (*mysql.Community, error) {
+	community, err := mysql.GetCommunityDetailById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return community, nil
 }
